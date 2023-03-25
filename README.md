@@ -1,6 +1,6 @@
 # go-mod-cleaner
 
-`go-mod-cleaner` is a cli tool to remove stale go modules. Due to side-effect of go module-cache, you need run this tool as an administrator.
+`go-mod-cleaner` is a cli tool to remove stale go modules. Due to [side-effect of go module-cache](https://go.dev/ref/mod#module-cache), you need run this tool as an administrator.
 
 
 # Install

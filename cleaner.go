@@ -39,7 +39,7 @@ func (c *Cleaner) Clean() error {
 		return err
 	}
 
-	uselessMods := make([]string, 0, len(cachedMods)-len(inUseMods))
+	uselessMods := make([]string, 0, max(0, len(cachedMods)-len(inUseMods)))
 
 	for _, mod := range cachedMods {
 		if _, ok := inUseMods[mod]; !ok {
@@ -227,4 +227,11 @@ func (c *Cleaner) retriveMods(filename string, data []byte) ([]string, error) {
 	}
 
 	return mods, nil
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
