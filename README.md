@@ -3,13 +3,13 @@
 `go-mod-cleaner` is a cli tool to remove stale go modules. Due to [side-effect of go module-cache](https://go.dev/ref/mod#module-cache), you need run this tool as an administrator.
 
 
-# Install
+## Install
 
 ```sh
 go install github.com/fosmjo/go-mod-cleaner@latest
 ```
 
-# Usage
+## Usage
 
 ```sh
 # show help doc
@@ -23,4 +23,18 @@ Flags:
 
 # remove or view mods to be deleted
 $ sudo -E go-mod-cleaner -m <path1> -m <path2> 
+```
+
+## Look & Feel
+
+```sh
+sudo -E go run *.go -m ~/coding -m ~/work -m ~/study
+Found 37 stale mods, occupied 32 MB disk space.
+
+You can:
+(1) Remove them (need admistrator permission).
+(2) View them.
+(3) Quit.
+
+Type one of the numbers in parentheses:1
 ```
