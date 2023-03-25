@@ -32,7 +32,7 @@ sudo -E go-mod-cleaner -m ~/coding -m ~/work -m ~/study
 Found 37 stale mods, occupied 32 MB disk space.
 
 You can:
-(1) Remove them (need admistrator permission).
+(1) Remove them (need administrator permission).
 (2) View them.
 (3) Quit.
 
