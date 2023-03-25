@@ -87,6 +87,7 @@ func (c *Cleaner) viewMods(mods []string) error {
 	}
 	return nil
 }
+
 func (c *Cleaner) removeMods(mods []string) error {
 	for _, mod := range mods {
 		path := c.modAbsPath(mod)
