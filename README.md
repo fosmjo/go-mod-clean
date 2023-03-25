@@ -28,7 +28,7 @@ $ sudo -E go-mod-cleaner -m <path1> -m <path2>
 ## Look & Feel
 
 ```sh
-sudo -E go run *.go -m ~/coding -m ~/work -m ~/study
+sudo -E go-mod-cleaner -m ~/coding -m ~/work -m ~/study
 Found 37 stale mods, occupied 32 MB disk space.
 
 You can:
