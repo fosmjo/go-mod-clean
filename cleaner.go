@@ -56,7 +56,7 @@ func (c *Cleaner) Clean() error {
 		`Found %d stale mods, occupied %s disk space.
 
 You can:
-(1) Remove them (need admistrator permission).
+(1) Remove them (need admistrator privileges).
 (2) View them.
 (3) Quit.
 
