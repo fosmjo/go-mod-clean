@@ -31,7 +31,8 @@ import (
 var modfilePaths []string
 
 var rootCmd = &cobra.Command{
-	Use: "go-mod-cleaner",
+	Use:  "go-mod-cleaner",
+	Long: "Clean up outdated Go modules.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		modCachePath := filepath.Join(os.Getenv("GOPATH"), "pkg", "mod")
 		cleaner := NewCleaner(modCachePath, modfilePaths)
@@ -49,7 +50,7 @@ func Execute() {
 func init() {
 	rootCmd.Flags().StringSliceVarP(
 		&modfilePaths, "modfile", "m", nil,
-		"modfile paths or dirs, mods referenced by these modfiles will not be removed",
+		"modfile paths or dirs, modules referenced by these modfiles are considered in use, and won't be cleaned",
 	)
 	err := rootCmd.MarkFlagRequired("modfile")
 	if err != nil {

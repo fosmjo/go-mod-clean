@@ -53,7 +53,7 @@ func (c *Cleaner) Clean() error {
 	}
 
 	fmt.Printf(
-		`Found %d stale mods, occupied %s disk space.
+		`Found %d outdated mods, occupied %s disk space.
 
 You can:
 (1) Remove them (need admistrator privileges).
