@@ -32,7 +32,7 @@ var modfilePaths []string
 
 var rootCmd = &cobra.Command{
 	Use:  "go-mod-cleaner",
-	Long: "Clean up outdated Go modules.",
+	Long: "Clean up unused Go modules.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		modCachePath := filepath.Join(os.Getenv("GOPATH"), "pkg", "mod")
 		cleaner := NewCleaner(modCachePath, modfilePaths)
