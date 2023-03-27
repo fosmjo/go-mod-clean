@@ -39,21 +39,21 @@ func (c *Cleaner) Clean() error {
 		return err
 	}
 
-	uselessMods := make([]string, 0, max(0, len(cachedMods)-len(inUseMods)))
+	unusedMods := make([]string, 0, max(0, len(cachedMods)-len(inUseMods)))
 
 	for _, mod := range cachedMods {
 		if _, ok := inUseMods[mod]; !ok {
-			uselessMods = append(uselessMods, mod)
+			unusedMods = append(unusedMods, mod)
 		}
 	}
 
-	totalSize, err := c.calculateSize(uselessMods)
+	totalSize, err := c.calculateSize(unusedMods)
 	if err != nil {
 		return err
 	}
 
 	fmt.Printf(
-		`Found %d outdated mods, occupied %s disk space.
+		`Found %d unused mods, occupied %s disk space.
 
 You can:
 (1) Remove them (need admistrator privileges).
@@ -61,7 +61,7 @@ You can:
 (3) Quit.
 
 Type one of the numbers in parentheses:`,
-		len(uselessMods),
+		len(unusedMods),
 		humanize.Bytes(uint64(totalSize)),
 	)
 	var input string
@@ -72,9 +72,9 @@ Type one of the numbers in parentheses:`,
 
 	switch input {
 	case "1":
-		return c.removeMods(uselessMods)
+		return c.removeMods(unusedMods)
 	case "2":
-		return c.viewMods(uselessMods)
+		return c.viewMods(unusedMods)
 	default:
 		return nil
 	}
