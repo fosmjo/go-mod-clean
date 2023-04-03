@@ -1,4 +1,4 @@
-package main
+package cleaner
 
 import (
 	"fmt"
@@ -16,10 +16,10 @@ type Cleaner struct {
 	modfilePaths []string
 }
 
-func NewCleaner(modCachePath string, filepaths []string) *Cleaner {
+func New(modCachePath string, filepaths []string) *Cleaner {
 	return &Cleaner{
 		modCachePath: modCachePath,
-		modfilePaths: modfilePaths,
+		modfilePaths: filepaths,
 	}
 }
 

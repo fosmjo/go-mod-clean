@@ -1,11 +1,11 @@
 # go-mod-cleaner
 
-`Go-mod-cleaner` is a cli tool to clean unused Go modules. To be specific, it cleans up all modules within `$GOPATH/pkg/mod`, except for currently used modules. To specify the modules in use, you need to indicate them via `go.mod` files or directories that contain `go.mod` files. Because of [the side-effect of the go module-cache](https://go.dev/ref/mod#module-cache), administrator privileges are necessary when running this tool.
+`go-mod-cleaner` is a cli tool to clean unused Go modules. To be specific, it cleans up all modules within `$GOPATH/pkg/mod`, except for currently used modules. To specify the modules in use, you need to indicate them via `go.mod` files or directories that contain `go.mod` files. Because of [the side-effect of the go module-cache](https://go.dev/ref/mod#module-cache), administrator privileges are necessary when running this tool.
 
 ## Install
 
 ```sh
-go install github.com/fosmjo/go-mod-cleaner@latest
+go install github.com/fosmjo/go-mod-cleaner/cmd/go-mod-cleaner@latest
 ```
 
 ## Usage
