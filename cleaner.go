@@ -1,11 +1,14 @@
 package cleaner
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"github.com/dustin/go-humanize"
 	"golang.org/x/mod/modfile"
@@ -62,7 +65,7 @@ You can:
 
 Type one of the numbers in parentheses:`,
 		len(unusedMods),
-		humanize.Bytes(uint64(totalSize)),
+		humanize.Bytes(totalSize),
 	)
 	var input string
 	_, err = fmt.Scanln(&input)
@@ -91,6 +94,7 @@ func (c *Cleaner) viewMods(mods []string) error {
 func (c *Cleaner) removeMods(mods []string) error {
 	for _, mod := range mods {
 		path := c.modAbsPath(mod)
+		fmt.Printf("Removing %s\n", path)
 		err := os.RemoveAll(path)
 		if err != nil {
 			return err
@@ -135,18 +139,42 @@ func (c *Cleaner) modAbsPath(mod string) string {
 	return filepath.Join(c.modCachePath, mod)
 }
 
-func (c *Cleaner) calculateSize(mods []string) (int64, error) {
-	var size int64
-	for _, mod := range mods {
-		s, err := c.calculateModSize(mod)
-		if err != nil {
-			return 0, err
-		}
+func (c *Cleaner) calculateSize(mods []string) (uint64, error) {
+	var size atomic.Uint64
+	var wg sync.WaitGroup
+	errCh := make(chan error)
 
-		size += s
+	wg.Add(len(mods))
+
+	for _, mod := range mods {
+		go func(mod string) {
+			defer wg.Done()
+
+			s, err := c.calculateModSize(mod)
+			if err != nil {
+				errCh <- err
+				return
+			}
+
+			size.Add(uint64(s))
+		}(mod)
 	}
 
-	return size, nil
+	go func() {
+		wg.Wait()
+		close(errCh)
+	}()
+
+	var errs []error
+	for err := range errCh {
+		errs = append(errs, err)
+	}
+
+	if len(errs) > 0 {
+		return 0, errors.Join(errs...)
+	}
+
+	return size.Load(), nil
 }
 
 func (c *Cleaner) calculateModSize(mod string) (int64, error) {
@@ -165,7 +193,7 @@ func (c *Cleaner) calculateModSize(mod string) (int64, error) {
 }
 
 func (c *Cleaner) allInUseMods(modfiles []string) (map[string]struct{}, error) {
-	result := make(map[string]struct{}, 128)
+	result := make(map[string]struct{}, len(modfiles)*32)
 
 	for _, path := range modfiles {
 		mods, err := c.parseModFile(path)
