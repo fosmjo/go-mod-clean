@@ -19,10 +19,10 @@ type Cleaner struct {
 	modfilePaths []string
 }
 
-func New(modCachePath string, filepaths []string) *Cleaner {
+func New(modCachePath string, modfilePaths []string) *Cleaner {
 	return &Cleaner{
 		modCachePath: modCachePath,
-		modfilePaths: filepaths,
+		modfilePaths: modfilePaths,
 	}
 }
 
@@ -42,7 +42,7 @@ func (c *Cleaner) Clean() error {
 		return err
 	}
 
-	unusedMods := make([]string, 0, max(0, len(cachedMods)-len(inUseMods)))
+	unusedMods := make([]string, 0, max(len(cachedMods)-len(inUseMods), 0))
 
 	for _, mod := range cachedMods {
 		if _, ok := inUseMods[mod]; !ok {
