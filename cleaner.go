@@ -133,10 +133,10 @@ func (c *Cleaner) removeMods(extractedMods []string, downloadedMods []string) er
 		}
 	}
 
-	return c.rewriteVersionList(downloadedMods)
+	return c.rewriteVersionListFiles(downloadedMods)
 }
 
-func (c *Cleaner) rewriteVersionList(removedMods []string) error {
+func (c *Cleaner) rewriteVersionListFiles(removedMods []string) error {
 	mod2versions := make(map[string][]string, len(removedMods))
 
 	for _, mod := range removedMods {
@@ -149,42 +149,43 @@ func (c *Cleaner) rewriteVersionList(removedMods []string) error {
 	}
 
 	for mod, removedVersions := range mod2versions {
-		filepath := filepath.Join(c.modDownloadPath, mod, "@v", "list")
-		f, err := os.OpenFile(filepath, os.O_RDWR, 0644)
-		if err != nil {
-			continue
-		}
-
-		err = func() error {
-			defer f.Close()
-
-			allVersions, err := c.parseVersionListFile(f)
-			if err != nil {
-				return err
-			}
-
-			err = f.Truncate(0)
-			if err != nil {
-				return err
-			}
-
-			_, err = f.Seek(0, io.SeekStart)
-			if err != nil {
-				return err
-			}
-
-			remainedVersions := diffSlice(allVersions, removedVersions)
-			for _, version := range remainedVersions {
-				fmt.Fprintf(f, "%s\n", version)
-			}
-
-			return nil
-		}()
-
+		err := c.rewriteVersionListFile(mod, removedVersions)
 		if err != nil {
 			log.Printf("failed to rewrite version list for %s: %v", mod, err)
 			continue
 		}
+	}
+
+	return nil
+}
+
+func (c *Cleaner) rewriteVersionListFile(mod string, removedVersions []string) error {
+	filepath := filepath.Join(c.modDownloadPath, mod, "@v", "list")
+	f, err := os.OpenFile(filepath, os.O_RDWR, 0644)
+	if err != nil {
+		return nil // file does not exist, nothing to do
+	}
+
+	defer f.Close()
+
+	allVersions, err := c.parseVersionListFile(f)
+	if err != nil {
+		return err
+	}
+
+	err = f.Truncate(0)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.Seek(0, io.SeekStart)
+	if err != nil {
+		return err
+	}
+
+	remainedVersions := diffSlice(allVersions, removedVersions)
+	for _, version := range remainedVersions {
+		fmt.Fprintf(f, "%s\n", version)
 	}
 
 	return nil
