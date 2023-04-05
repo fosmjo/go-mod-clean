@@ -64,7 +64,7 @@ func (c *Cleaner) Clean() error {
 		`Found %d unused mods, occupied %s disk space.
 
 You can:
-(1) Remove them (need admistrator privileges).
+(1) Remove them (require admistrator privileges).
 (2) View them.
 (3) Quit.
 
