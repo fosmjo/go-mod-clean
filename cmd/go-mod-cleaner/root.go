@@ -34,8 +34,9 @@ var modfilePaths []string
 var rootCmd = &cobra.Command{
 	Use:   "go-mod-cleaner",
 	Short: "Clean up unused Go modules.",
-	Long: `Clean up unused Go modules. To be specific, it cleans up all modules within $GOPATH/pkg/mod, except for currently used modules.
-To specify the modules in use, you need to indicate them via go.mod files or directories that contain go.mod files.`,
+	Long: `Clean up unused Go modules. To be specific, it cleans up all modules within $GOPATH/pkg/mod,
+except for currently used modules. To specify the modules in use, you need to indicate them
+via go.mod files or directories that contain go.mod files.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		modCachePath := filepath.Join(os.Getenv("GOPATH"), "pkg", "mod")
 		cleaner := cleaner.New(modCachePath, modfilePaths)

@@ -13,8 +13,9 @@ go install github.com/fosmjo/go-mod-cleaner/cmd/go-mod-cleaner@latest
 ```sh
 # show help doc
 $ go-mod-cleaner -h
-Clean up unused Go modules. To be specific, it cleans up all modules within $GOPATH/pkg/mod, except for currently used modules.
-To specify the modules in use, you need to indicate them via go.mod files or directories that contain go.mod files.
+Clean up unused Go modules. To be specific, it cleans up all modules within $GOPATH/pkg/mod,
+except for currently used modules. To specify the modules in use, you need to indicate them
+via go.mod files or directories that contain go.mod files.
 
 Usage:
   go-mod-cleaner [flags]
