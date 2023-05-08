@@ -42,12 +42,7 @@ func (c *Cleaner) Clean() error {
 		return err
 	}
 
-	modfiles, err := c.allModfiles()
-	if err != nil {
-		return err
-	}
-
-	inUseMods, err := c.allInUseMods(modfiles)
+	inUseMods, err := c.allInUseMods()
 	if err != nil {
 		return err
 	}
@@ -392,38 +387,90 @@ func (c *Cleaner) downloadedModFiles(mod string) ([]string, error) {
 	return files, err
 }
 
-func (c *Cleaner) allInUseMods(modfiles []string) (map[string]struct{}, error) {
-	result := make(map[string]struct{}, len(modfiles)*32)
-
-	for _, path := range modfiles {
-		mods, err := c.parseModFile(path)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, m := range mods {
-			result[m] = struct{}{}
-		}
-	}
-
-	return result, nil
-}
-
-func (c *Cleaner) allModfiles() ([]string, error) {
+func (c *Cleaner) allInUseMods() (map[string]struct{}, error) {
 	var modfiles []string
-
 	for _, p := range c.modfilePaths {
 		if filepath.Base(p) == "go.mod" {
 			modfiles = append(modfiles, p)
 			continue
 		}
 
-		files, err := filepath.Glob(filepath.Join(p, "**", "go.mod"))
+		files, err := c.modfileUnderDir(p)
 		if err != nil {
 			return nil, err
 		}
 
 		modfiles = append(modfiles, files...)
+	}
+
+	modfilesMap := map[string]struct{}{}
+	modsMap := map[string]struct{}{}
+
+	for _, p := range modfiles {
+		err := c.walkModfilesRecursive(p, modfilesMap, modsMap)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return modsMap, nil
+
+}
+
+func (c *Cleaner) walkModfilesRecursive(
+	modfile string, modfilesMap map[string]struct{}, modsMap map[string]struct{},
+) error {
+	if _, ok := modfilesMap[modfile]; ok {
+		return nil
+	}
+
+	modfilesMap[modfile] = struct{}{}
+
+	mods, err := c.parseModFile(modfile)
+	if err != nil {
+		return err
+	}
+
+	for _, m := range mods {
+		modsMap[m] = struct{}{}
+
+		modfile := filepath.Join(c.extractedModAbsPath(m), "go.mod")
+		if _, err := os.Stat(modfile); err != nil {
+			continue
+		}
+
+		err := c.walkModfilesRecursive(modfile, modfilesMap, modsMap)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *Cleaner) modfileUnderDir(dir string) ([]string, error) {
+	var modfiles []string
+
+	err := filepath.WalkDir(
+		dir,
+		func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				var perr *os.PathError
+				if errors.As(err, &perr) {
+					return nil
+				}
+				return err
+			}
+
+			if !d.IsDir() && filepath.Base(path) == "go.mod" {
+				modfiles = append(modfiles, path)
+			}
+
+			return nil
+		},
+	)
+	if err != nil {
+		return nil, err
 	}
 
 	return modfiles, nil
