@@ -35,8 +35,8 @@ $ go-mod-cleaner -m ~/coding -m ~/work -m ~/study
 Found 37 unused mods, occupied 32 MB disk space.
 
 You can:
-(1) Remove them (need administrator privileges).
-(2) View them.
+(1) View them.
+(2) Remove them (require admistrator privileges).
 (3) Quit.
 
 Type one of the numbers in parentheses:2
@@ -50,8 +50,8 @@ $ sudo -E go-mod-cleaner -m ~/coding -m ~/work -m ~/study
 Found 37 unused mods, occupied 32 MB disk space.
 
 You can:
-(1) Remove them (require administrator privileges).
-(2) View them.
+(1) View them.
+(2) Remove them (require admistrator privileges).
 (3) Quit.
 
 Type one of the numbers in parentheses:1

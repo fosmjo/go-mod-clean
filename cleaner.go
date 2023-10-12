@@ -62,8 +62,8 @@ func (c *Cleaner) Clean() error {
 		`Found %d unused mods, occupied %s disk space.
 
 You can:
-(1) Remove them (require admistrator privileges).
-(2) View them.
+(1) View them.
+(2) Remove them (require admistrator privileges).
 (3) Quit.
 
 Type one of the numbers in parentheses:`,
@@ -78,9 +78,9 @@ Type one of the numbers in parentheses:`,
 
 	switch input {
 	case "1":
-		return c.removeMods(unusedExtractedMods, unusedDownloadedMods)
-	case "2":
 		return c.viewMods(unusedExtractedMods, unusedDownloadedMods)
+	case "2":
+		return c.removeMods(unusedExtractedMods, unusedDownloadedMods)
 	default:
 		return nil
 	}
