@@ -39,7 +39,7 @@ You can:
 (2) Remove them (require admistrator privileges).
 (3) Quit.
 
-Type one of the numbers in parentheses:2
+Type one of the numbers in parentheses:1
 ```
 
 ### Remove unused modules
@@ -54,5 +54,5 @@ You can:
 (2) Remove them (require admistrator privileges).
 (3) Quit.
 
-Type one of the numbers in parentheses:1
+Type one of the numbers in parentheses:2
 ```
