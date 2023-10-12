@@ -1,4 +1,4 @@
-package cleaner
+package main
 
 import (
 	"bufio"
@@ -25,7 +25,7 @@ type Cleaner struct {
 	verbose         bool
 }
 
-func New(modCachePath string, modfilePaths []string, verbose bool) *Cleaner {
+func NewCleaner(modCachePath string, modfilePaths []string, verbose bool) *Cleaner {
 	return &Cleaner{
 		modCachePath:    modCachePath,
 		modDownloadPath: filepath.Join(modCachePath, "cache", "download"),

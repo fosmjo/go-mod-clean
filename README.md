@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-go install github.com/fosmjo/go-mod-cleaner/cmd/go-mod-cleaner@latest
+go install github.com/fosmjo/go-mod-cleaner@latest
 ```
 
 ## Usage
