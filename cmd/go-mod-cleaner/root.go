@@ -25,11 +25,16 @@ import (
 	"os"
 	"path/filepath"
 
-	cleaner "github.com/fosmjo/go-mod-cleaner"
 	"github.com/spf13/cobra"
+
+	cleaner "github.com/fosmjo/go-mod-cleaner"
 )
 
-var modfilePaths []string
+// flag variables
+var (
+	modfilePaths []string
+	verbose      bool
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "go-mod-cleaner",
@@ -39,7 +44,7 @@ except for currently used modules. To specify the modules in use, you need to in
 via go.mod files or directories that contain go.mod files.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		modCachePath := filepath.Join(os.Getenv("GOPATH"), "pkg", "mod")
-		cleaner := cleaner.New(modCachePath, modfilePaths)
+		cleaner := cleaner.New(modCachePath, modfilePaths, verbose)
 		return cleaner.Clean()
 	},
 }
@@ -61,4 +66,6 @@ modules referenced by these files are considered in use`,
 	if err != nil {
 		panic(err)
 	}
+
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose mode")
 }

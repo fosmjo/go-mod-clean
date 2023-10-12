@@ -22,13 +22,15 @@ type Cleaner struct {
 	modCachePath    string
 	modDownloadPath string
 	modfilePaths    []string
+	verbose         bool
 }
 
-func New(modCachePath string, modfilePaths []string) *Cleaner {
+func New(modCachePath string, modfilePaths []string, verbose bool) *Cleaner {
 	return &Cleaner{
 		modCachePath:    modCachePath,
 		modDownloadPath: filepath.Join(modCachePath, "cache", "download"),
 		modfilePaths:    modfilePaths,
+		verbose:         verbose,
 	}
 }
 
@@ -87,7 +89,7 @@ Type one of the numbers in parentheses:`,
 func (c *Cleaner) viewMods(extractedMods []string, downloadedMods []string) error {
 	for _, mod := range extractedMods {
 		path := c.extractedModAbsPath(mod)
-		fmt.Println(path)
+		fmt.Printf("dir %s\n", path)
 	}
 
 	for _, mod := range downloadedMods {
@@ -97,7 +99,7 @@ func (c *Cleaner) viewMods(extractedMods []string, downloadedMods []string) erro
 		}
 
 		for _, file := range files {
-			fmt.Println(file)
+			fmt.Printf("file %s\n", file)
 		}
 	}
 
@@ -107,7 +109,9 @@ func (c *Cleaner) viewMods(extractedMods []string, downloadedMods []string) erro
 func (c *Cleaner) removeMods(extractedMods []string, downloadedMods []string) error {
 	for _, mod := range extractedMods {
 		path := c.extractedModAbsPath(mod)
-		fmt.Printf("Removing %s\n", path)
+		if c.verbose {
+			fmt.Printf("remove dir %s\n", path)
+		}
 		err := os.RemoveAll(path)
 		if err != nil {
 			return err
@@ -121,7 +125,9 @@ func (c *Cleaner) removeMods(extractedMods []string, downloadedMods []string) er
 		}
 
 		for _, file := range files {
-			fmt.Printf("Removing %s\n", file)
+			if c.verbose {
+				fmt.Printf("remove file %s\n", file)
+			}
 			err := os.Remove(file)
 			if err != nil {
 				return err
