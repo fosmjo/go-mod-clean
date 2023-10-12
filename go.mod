@@ -1,4 +1,4 @@
-module github.com/fosmjo/go-mod-cleaner
+module github.com/fosmjo/go-mod-clean
 
 go 1.21
 
