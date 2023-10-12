@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+	"unicode"
 
 	"github.com/dustin/go-humanize"
 	"golang.org/x/mod/modfile"
@@ -265,7 +266,7 @@ func (c *Cleaner) unusedMods(mods []string, inUseMods map[string]struct{}) []str
 	unused := make([]string, 0, max(len(mods)-len(inUseMods), 0))
 
 	for _, mod := range mods {
-		if _, ok := inUseMods[mod]; !ok {
+		if _, ok := inUseMods[pathToMod(mod)]; !ok {
 			unused = append(unused, mod)
 		}
 	}
@@ -532,4 +533,34 @@ func diffSlice(a, b []string) []string {
 	}
 
 	return result
+}
+
+// Aaccording to the doc at https://go.dev/ref/mod#checksum-database.
+// To avoid ambiguity when serving from case-insensitive file systems, the $module and $version elements are case-encoded
+// by replacing every uppercase letter with an exclamation mark followed by the corresponding lower-case letter.
+//
+// pathToMod converts a file system path to a module
+func pathToMod(path string) string {
+	if !strings.ContainsRune(path, '!') {
+		return path
+	}
+
+	data := make([]rune, 0, len(path))
+	previousCharIsExclamationMark := false
+
+	for _, c := range path {
+		if c == '!' {
+			previousCharIsExclamationMark = true
+			continue
+		}
+
+		if previousCharIsExclamationMark {
+			previousCharIsExclamationMark = false
+			c = unicode.ToUpper(c)
+		}
+
+		data = append(data, c)
+	}
+
+	return string(data)
 }
