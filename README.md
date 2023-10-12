@@ -24,6 +24,7 @@ Flags:
   -h, --help              help for go-mod-cleaner
   -m, --modfile strings   go.mod files or directories that contain go.mod files,
                           modules referenced by these files are considered in use
+  -v, --verbose           enable verbose mode
 ```
 
 ## Use case
